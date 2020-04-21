@@ -10,6 +10,7 @@ def change(file_path):
         chapter_tag = input("Enter Chapter Tag: ")
         verse_tag = input("Enter Verse Tag: ")
         number_attr = input("Enter Number Attr: ")
+        title_attr   = input("Enter the Book Title Attribute: ")
 
         tree = ET.parse(file_path)
 
@@ -18,6 +19,10 @@ def change(file_path):
         if not book_tag == "book":
             for elem in tree.findall(book_tag):
                 elem.tag = "book"
+                if not name_attr == "title":
+                    title = elem.attrib[name_attr]
+                    elem.attrib.pop(name_attr, None)
+                    elem.set("title", "{}".format(title))
         if not chapter_tag == "chaptr":
             for elem in tree.findall("book/{}".format(chapter_tag)):
                 elem.tag = "chapter"
