@@ -1,6 +1,9 @@
-import webbrowser, os, sys
+import webbrowser, os, sys, copy
 import xml.etree.ElementTree as ET
+from appdirs import *
 
+appname = "unquenched-editor"
+appauthor = "Unquenched Servant"
 def change(file_path):
     if check_file(file_path):
         #open xml for checking
@@ -33,7 +36,57 @@ def changer(tree, xpath, search_tag, wanted, attr, wanted_attr):
 
 def split(file_path):
     if check_file(file_path):
-        pass
+        tree = ET.parse(file_path)
+        bible = tree.getroot()
+        abbvr = input("Please enter translation abbreviation: ")
+        root_path = "{}/{}".format(user_data_dir(appname, appauthor), abbvr)
+        if not os.path.exists(root_path):
+            os.makedirs(root_path)
+        tYear = input("Please enter year of version: ")
+        version_path = "{}/{}".format(root_path, tYear)
+        if not os.path.exists(version_path):
+            os.mkdir(version_path)
+        if not os.path.exists("{}/Old Testament".format(version_path)):
+            os.mkdir("{}/Old Testament".format(version_path))
+        if not os.path.exists("{}/New Testament".format(version_path)):
+            os.mkdir("{}/New Testament".format(version_path))
+
+        x = 1 #for starting folder names
+        is_OT = True
+
+
+
+        if not bible.tag == "bible":
+            change(file_path)
+
+        testament_path = "{}/Old Testament".format(version_path)
+        for book in bible:
+            if not book.tag == "book":
+                change(file_path)
+            title = book.attrib["title"]
+            if title == "Matthew":
+                is_OT = False
+                x = 1
+                testament_path = "{}/New Testament".format(version_path)
+            book_path = "{}/{}. {}".format(testament_path, x, title)
+            if not os.path.exists(book_path):
+                os.mkdir("{}".format(book_path))
+
+
+            book_data = ET.tostring(book).decode('utf-8')
+            book_file = open("{}/{}.xml".format(book_path, title), "w")
+            book_file.write(book_data)
+            book_file.close()
+            x += 1
+            for chapter in book:
+                if not chapter.tag == "chapter":
+                    change(file_path)
+                ch_number = chapter.attrib["number"]
+                write_path = "{}/{} {}.xml".format(book_path, title, ch_number)
+                chapter_data = ET.tostring(chapter).decode('utf-8')
+                chapter_file = open(write_path, "w")
+                chapter_file.write(chapter_data)
+                chapter_file.close()
 
 def check_file(file_path):
     if not os.path.exists(file_path):
