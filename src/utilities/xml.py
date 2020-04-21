@@ -19,9 +19,9 @@ def change(file_path):
         if not book_tag == "book":
             for elem in tree.findall(book_tag):
                 elem.tag = "book"
-                if not name_attr == "title":
-                    title = elem.attrib[name_attr]
-                    elem.attrib.pop(name_attr, None)
+                if not title_attr == "title":
+                    title = elem.attrib[title_attr]
+                    elem.attrib.pop(title_attr, None)
                     elem.set("title", "{}".format(title))
         if not chapter_tag == "chaptr":
             for elem in tree.findall("book/{}".format(chapter_tag)):
