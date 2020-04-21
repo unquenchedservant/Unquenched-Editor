@@ -16,28 +16,20 @@ def change(file_path):
 
         if not tree.getroot().tag == "bible":
             tree.getroot().tag = "bible"
-        if not book_tag == "book":
-            for elem in tree.findall(book_tag):
-                elem.tag = "book"
-                if not title_attr == "title":
-                    title = elem.attrib[title_attr]
-                    elem.attrib.pop(title_attr, None)
-                    elem.set("title", "{}".format(title))
-        if not chapter_tag == "chapter":
-            for elem in tree.findall("book/{}".format(chapter_tag)):
-                elem.tag = "chapter"
-                if not number_attr == "number":
-                    num = elem.attrib[number_attr]
-                    elem.attrib.pop(number_attr, None)
-                    elem.set("number", "{}".format(num))
-        if not verse_tag == "verse":
-            for elem in tree.findall("book/chapter/{}".format(verse_tag)):
-                elem.tag = "verse"
-                if not number_attr == "number":
-                    num = elem.attrib[number_attr]
-                    elem.attrib.pop(number_attr, None)
-                    elem.set("number", "{}".format(num))
+        tree = changer(tree, book_tag, book_tag, "book", title_attr, "title")
+        tree = changer(tree, "book/{}".format(chapter_tag), chapter_tag, "chapter", number_attr, "number")
+        tree = changer(tree, "book/chapter/{}".format(verse_tag), verse_tag, "verse", number_attr, "number")
         tree.write(file_path)
+
+def changer(tree, xpath, search_tag, wanted, attr, wanted_attr):
+    if not search_tag == wanted:
+        for elem in tree.findall(xpath):
+            elem.tag = wanted
+            if not attr == wanted_attr:
+                temp = elem.attrib[attr]
+                elem.attrib.pop(attr, None)
+                elem.set("{}".format(wanted_attr), "{}".format(temp))
+    return tree
 
 def split(file_path):
     if check_file(file_path):
