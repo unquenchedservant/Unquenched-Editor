@@ -1,7 +1,38 @@
 import webbrowser, os, sys
 import xml.etree.ElementTree as ET
 
+def change(file_path):
+    if check_file(file_path):
+        webbrowser.open(file_path)
 
+        book_tag = input("Enter Book Tag: ")
+        chapter_tag = input("Enter Chapter Tag: ")
+        verse_tag = input("Enter Verse Tag: ")
+        number_attr = input("Enter Number Attr: ")
+
+        tree = ET.parse(file_path)
+
+        if not tree.getroot().tag == "bible":
+            tree.getroot().tag = "bible"
+        if not book_tag == "book":
+            for elem in tree.findall(book_tag):
+                elem.tag = "book"
+        if not chapter_tag == "chaptr":
+            for elem in tree.findall("book/{}".format(chapter_tag)):
+                elem.tag = "chapter"
+                if not number_attr == "number":
+                    num = elem.attrib["n"]
+                    elem.attrib.pop("n", None)
+                    elem.set("number", "{}".format(num))
+        if not verse_tag == "vere":
+            for elem in tree.findall("book/chapter/{}".format(verse_tag)):
+                elem.tag = "verse"
+                if not number_attr == "number":
+                    num = elem.attrib["n"]
+                    elem.attrib.pop("n", None)
+                    elem.set("number", "{}".format(num))
+        tree.write(file_path)
+        
 def split(file_path):
     if check_file(file_path):
         pass
