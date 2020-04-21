@@ -21,15 +21,15 @@ def change(file_path):
             for elem in tree.findall("book/{}".format(chapter_tag)):
                 elem.tag = "chapter"
                 if not number_attr == "number":
-                    num = elem.attrib["n"]
-                    elem.attrib.pop("n", None)
+                    num = elem.attrib[number_attr]
+                    elem.attrib.pop(number_attr, None)
                     elem.set("number", "{}".format(num))
         if not verse_tag == "vere":
             for elem in tree.findall("book/chapter/{}".format(verse_tag)):
                 elem.tag = "verse"
                 if not number_attr == "number":
-                    num = elem.attrib["n"]
-                    elem.attrib.pop("n", None)
+                    num = elem.attrib[number_attr]
+                    elem.attrib.pop(number_attr, None)
                     elem.set("number", "{}".format(num))
         tree.write(file_path)
         
