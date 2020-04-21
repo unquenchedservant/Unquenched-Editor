@@ -1,4 +1,4 @@
-import webbrowser, os, sys, copy
+import webbrowser, os, sys, copy, shutil
 import xml.etree.ElementTree as ET
 from appdirs import *
 
@@ -46,10 +46,13 @@ def split(file_path):
         version_path = "{}/{}".format(root_path, tYear)
         if not os.path.exists(version_path):
             os.mkdir(version_path)
-        if not os.path.exists("{}/Old Testament".format(version_path)):
-            os.mkdir("{}/Old Testament".format(version_path))
-        if not os.path.exists("{}/New Testament".format(version_path)):
-            os.mkdir("{}/New Testament".format(version_path))
+        xml_path = "{}/{}".format(version_path, "xml")
+        if not os.path.exists(xml_path):
+            os.mkdir(xml_path)
+        if not os.path.exists("{}/Old Testament".format(xml_path)):
+            os.mkdir("{}/Old Testament".format(xml_path))
+        if not os.path.exists("{}/New Testament".format(xml_path)):
+            os.mkdir("{}/New Testament".format(xml_path))
 
         x = 1 #for starting folder names
         is_OT = True
@@ -59,15 +62,15 @@ def split(file_path):
         if not bible.tag == "bible":
             change(file_path)
 
-        testament_path = "{}/Old Testament".format(version_path)
+        testament_path = "{}/Old Testament".format(xml_path)
         for book in bible:
             if not book.tag == "book":
                 change(file_path)
             title = book.attrib["title"]
             if title == "Matthew":
                 is_OT = False
-                x = 1
-                testament_path = "{}/New Testament".format(version_path)
+                x = 41
+                testament_path = "{}/New Testament".format(xml_path)
             book_path = "{}/{}. {}".format(testament_path, x, title)
             if not os.path.exists(book_path):
                 os.mkdir("{}".format(book_path))
@@ -87,6 +90,7 @@ def split(file_path):
                 chapter_file = open(write_path, "w")
                 chapter_file.write(chapter_data)
                 chapter_file.close()
+        shutil.copyfile(file_path, "{}/full.xml".format(version_path))
 
 def check_file(file_path):
     if not os.path.exists(file_path):
