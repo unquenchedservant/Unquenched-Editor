@@ -3,8 +3,9 @@ import xml.etree.ElementTree as ET
 
 def change(file_path):
     if check_file(file_path):
+        #open xml for checking
         webbrowser.open(file_path)
-
+        #enter the current tags for comparison
         book_tag = input("Enter Book Tag: ")
         chapter_tag = input("Enter Chapter Tag: ")
         verse_tag = input("Enter Verse Tag: ")
@@ -32,7 +33,7 @@ def change(file_path):
                     elem.attrib.pop(number_attr, None)
                     elem.set("number", "{}".format(num))
         tree.write(file_path)
-        
+
 def split(file_path):
     if check_file(file_path):
         pass
