@@ -1,4 +1,10 @@
 import webbrowser, os, sys
+import xml.etree.ElementTree as ET
+
+
+def split(file_path):
+    if check_file(file_path):
+        pass
 
 def check_file(file_path):
     if not os.path.exists(file_path):
